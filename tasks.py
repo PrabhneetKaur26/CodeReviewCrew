@@ -14,7 +14,10 @@ def create_tasks(user_requirement, previous_feedback=""):
             "- Handle edge cases\n"
             "- Return only the function code, nothing else"
         ),
-        expected_output="A complete Python function with docstring and inline comments.",
+        expected_output=(
+    "A complete Python function containing a docstring and inline comments. "
+    "Return only the function code."
+),
         agent=coder_agent
     )
 
