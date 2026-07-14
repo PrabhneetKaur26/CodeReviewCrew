@@ -16,8 +16,8 @@ def create_tasks(user_requirement, previous_feedback=""):
         ),
         expected_output=(
     "A complete Python function containing a docstring and inline comments. "
-    "Return only the function code."
-),
+    "Return only the function code."),
+
         agent=coder_agent
     )
 
@@ -41,7 +41,7 @@ def create_tasks(user_requirement, previous_feedback=""):
         agent=reviewer_agent,
         context=[coding_task]
     )
-
+    
     security_task = Task(
         description=(
             "Perform a security review of the Python function written by the Coder agent.\n"
