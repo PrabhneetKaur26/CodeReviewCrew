@@ -51,10 +51,7 @@ def run_crew(user_requirement):
             "tester": tester_output
         })
 
-        tests_passed = (
-            "PASSED" in tester_output.upper() and
-            "FAILED" not in tester_output.upper()
-        )
+        tests_passed = "VERDICT: PASSED" in tester_output.upper()
 
         reviewer_approved = (
             "APPROVED" in reviewer_output.upper() and
@@ -66,7 +63,7 @@ def run_crew(user_requirement):
             "VULNERABILITIES FOUND" not in security_output.upper()
         )
 
-        if reviewer_approved and security_approved:
+        if reviewer_approved and security_approved and tests_passed:
             overall_status = "SUCCESS"
             print(f"\n✅ All checks passed at iteration {iteration}. Stopping loop.")
             break

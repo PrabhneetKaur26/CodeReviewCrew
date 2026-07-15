@@ -31,14 +31,15 @@ def create_tasks(user_requirement, previous_feedback=""):
         "- Readability issues\n"
         "- Best practice violations\n\n"
         "Do NOT rewrite the code. Only provide feedback.\n"
-        "Be decisive — if there are issues, say NEEDS IMPROVEMENT.\n"
-        "Only say APPROVED if the code truly needs no changes."
+        "Be decisive — if there are issues, write NEEDS IMPROVEMENT.\n"
+        "Only say APPROVED if the code truly needs no changes.\n\n"
+        "At the very end of your response, write exactly one of these two lines, "
+        "verbatim, as the very last line and nothing after it:\n"
+        "VERDICT: APPROVED\n"
+        "VERDICT: NEEDS IMPROVEMENT"
     ),
     expected_output=(
-        "A structured review with:\n"
-        "- APPROVED (if code needs no changes) or NEEDS IMPROVEMENT (if issues exist)\n"
-        "- If NEEDS IMPROVEMENT: list specific issues only, no suggestions for approved code\n"
-        "- If APPROVED: confirm what is correct, no improvement suggestions"
+        "A structured review ending with exactly 'VERDICT: APPROVED' or 'VERDICT: NEEDS IMPROVEMENT'."
     ),
     agent=reviewer_agent,
     context=[coding_task]
@@ -54,13 +55,14 @@ def create_tasks(user_requirement, previous_feedback=""):
         "- Unsafe file operations\n"
         "- Missing input validation\n\n"
         "Be decisive — only flag real vulnerabilities, not theoretical ones.\n"
-        "Do NOT suggest general improvements if no real vulnerabilities exist."
+        "Do NOT suggest general improvements if no real vulnerabilities exist.\n\n"
+        "At the very end of your response, write exactly one of these two lines, "
+        "verbatim, as the very last line and nothing after it:\n"
+        "VERDICT: SECURE\n"
+        "VERDICT: VULNERABILITIES FOUND"
     ),
     expected_output=(
-        "A security report with:\n"
-        "- SECURE (if no real vulnerabilities found) or VULNERABILITIES FOUND (if issues exist)\n"
-        "- If SECURE: briefly confirm what was checked\n"
-        "- If VULNERABILITIES FOUND: list each issue with explanation and fix"
+        "A security report ending with exactly 'VERDICT: SECURE' or 'VERDICT: VULNERABILITIES FOUND'."
     ),
     agent=security_agent,
     context=[coding_task]
@@ -72,14 +74,17 @@ def create_tasks(user_requirement, previous_feedback=""):
         "Requirements:\n"
         "- Write at least 4 test cases covering normal inputs, edge cases, and invalid inputs\n"
         "- After writing the tests, simulate running them mentally based on the code logic\n"
-        "- At the very end of your response, write either PASSED or FAILED on its own line\n"
-        "- Write PASSED if all tests would pass based on the code logic\n"
-        "- Write FAILED if any test would fail, and explain why"
+        "- At the very end of your response, write exactly one of these two lines, "
+        "verbatim, as the very last line and nothing after it:\n"
+        "VERDICT: PASSED\n"
+        "VERDICT: FAILED\n"
+        "- Write VERDICT: PASSED if all tests would pass based on the code logic\n"
+        "- Write VERDICT: FAILED if any test would fail, and explain why before the verdict line"
     ),
     expected_output=(
-        "Unit tests followed by a clear verdict.\n"
-        "Last line must be either PASSED or FAILED."
-    ),
+    "Unit tests followed by a clear verdict.\n"
+    "Last line must be exactly 'VERDICT: PASSED' or 'VERDICT: FAILED'."
+),
     agent=tester_agent,
     context=[coding_task]
 )

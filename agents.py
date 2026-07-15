@@ -1,6 +1,6 @@
 # agents.py
 from crewai import Agent
-from config import llm
+from config import small_llm, large_llm
 
 coder_agent = Agent(
     role="Python Developer",
@@ -15,7 +15,8 @@ coder_agent = Agent(
         "efficient, and well-documented functions. When given feedback, "
         "you carefully fix the issues and improve the code."
     ),
-    llm=llm,
+    llm=small_llm,
+    cache=True,
     verbose=True,
     allow_delegation=False
 )
@@ -28,7 +29,8 @@ reviewer_agent = Agent(
         "You catch logic errors, missing edge cases, poor naming, and style issues. "
         "You never rewrite code yourself — you only provide structured feedback."
     ),
-    llm=llm,
+    llm=large_llm,
+    cache=True,
     verbose=True,
     allow_delegation=False
 )
@@ -43,7 +45,8 @@ security_agent = Agent(
         "You explain why each issue is dangerous and report a concise, concrete fix — "
         "you don't suggest general improvements beyond confirmed vulnerabilities."
     ),
-    llm=llm,
+    llm=large_llm,
+    cache=True,
     verbose=True,
     allow_delegation=False
 )
@@ -56,7 +59,8 @@ tester_agent = Agent(
         "edge cases, and invalid inputs. You execute the tests and report results "
         "with pass/fail status and reasons for any failures."
     ),
-    llm=llm,
+    llm=small_llm,
+    cache=True,
     verbose=True,
     allow_delegation=False
 )
