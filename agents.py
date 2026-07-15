@@ -4,7 +4,12 @@ from config import llm
 
 coder_agent = Agent(
     role="Python Developer",
-    goal="Write clean, functional Python code based on the user's requirement and any feedback received from previous iterations.",
+    goal=(
+    "Write clean, functional Python code based on the user's requirement. "
+    "When given feedback, only modify the code to fix the specific defects "
+    "raised by the Reviewer or Security agent — do not make unrelated "
+    "stylistic rewrites to code that wasn't flagged."
+),
     backstory=(
         "You are an experienced Python developer who writes readable, "
         "efficient, and well-documented functions. When given feedback, "
@@ -35,7 +40,8 @@ security_agent = Agent(
         "You are a cybersecurity engineer who reviews code for dangerous patterns "
         "such as use of eval(), exec(), shell injection, hardcoded secrets, "
         "unsafe file operations, and missing input validation. "
-        "You explain why each issue is dangerous and suggest safer alternatives."
+        "You explain why each issue is dangerous and report a concise, concrete fix — "
+        "you don't suggest general improvements beyond confirmed vulnerabilities."
     ),
     llm=llm,
     verbose=True,
