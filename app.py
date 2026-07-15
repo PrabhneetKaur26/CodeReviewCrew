@@ -197,7 +197,7 @@ st.markdown("""
         <span class="nav-tag">4 agents · max 3 cycles</span>
         <div class="nav-chips">
             <span class="nav-chip nc-purple">CrewAI</span>
-            <span class="nav-chip nc-blue">Groq LLM</span>
+            <span class="nav-chip nc-blue">Gemini</span>
             <span class="nav-chip nc-green">Multi-Agent</span>
         </div>
     </div>
@@ -738,7 +738,7 @@ if run_button:
         err = str(e)
         if "rate_limit" in err.lower() or "ratelimit" in err.lower():
             set_status("Rate limit reached — please wait ~60s and retry", "fail")
-            st.error("⏱️ **Groq API rate limit reached.**\n\nFour agents make multiple LLM calls in sequence. Please wait about 60 seconds before running again.")
+            st.error("⏱️ **Gemini API rate limit reached.**\n\nFour agents make multiple LLM calls in sequence. Please wait about 60 seconds before running again.")
         else:
             set_status("Pipeline failed", "fail")
             st.error(f"❌ Error:\n\n{err}")
