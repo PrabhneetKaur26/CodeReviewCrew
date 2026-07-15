@@ -8,18 +8,18 @@ _crewai_cache.mark_cache_breakpoint = lambda msg: msg
 
 load_dotenv()
 
-# Large model
+# Large LLM for Reviewer & Security
 large_llm = LLM(
-    model="gemini/gemini-2.5-flash",
-    api_key=os.getenv("GEMINI_API_KEY"),
+    model="groq/llama-3.3-70b-versatile",
+    api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.2,
     max_tokens=4096
 )
 
-# Small model
+# Small LLM for Coder & Tester
 small_llm = LLM(
-    model="gemini/gemini-2.5-flash",
-    api_key=os.getenv("GEMINI_API_KEY"),
+    model="groq/llama-3.1-8b-instant",
+    api_key=os.getenv("GROQ_API_KEY"),
     temperature=0.2,
     max_tokens=4096
 )
