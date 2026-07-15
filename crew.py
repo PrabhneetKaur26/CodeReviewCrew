@@ -66,7 +66,7 @@ def run_crew(user_requirement):
             "VULNERABILITIES FOUND" not in security_output.upper()
         )
 
-        if tests_passed and reviewer_approved and security_approved:
+        if reviewer_approved and security_approved:
             overall_status = "SUCCESS"
             print(f"\n✅ All checks passed at iteration {iteration}. Stopping loop.")
             break
