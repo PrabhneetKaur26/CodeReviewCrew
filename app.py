@@ -25,7 +25,11 @@ html, body, [data-testid="stAppViewContainer"] {
     color: #e2e8f0;
     font-family: 'Inter', sans-serif;
 }
-.block-container { padding: 0 !important; max-width: 100% !important; }
+.block-container {
+    padding: 0 !important;
+    padding-top: 5rem !important;
+    max-width: 100% !important;
+}
 section[data-testid="stSidebar"] { display: none; }
 
 /* ── readability pass — base + code text sizes ── */
