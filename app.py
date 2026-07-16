@@ -433,6 +433,135 @@ with mid:
 
     st.write("")
     run_button = st.button("Run Pipeline →", type="primary", use_container_width=True)
+    demo_mode = st.checkbox(
+        "⚡ Demo Mode (instant — no API calls, for recording/preview)",
+        value=False,
+        help="Uses pre-written realistic outputs so you can preview the full UI without spending Groq quota."
+    )
+
+# ── DEMO DATA ─────────────────────────────────────────────────────
+def get_demo_summary():
+    coder_out = '''def is_prime(n: int) -> bool:
+    """
+    Check whether a given integer is a prime number.
+
+    Args:
+        n (int): The integer to check.
+
+    Returns:
+        bool: True if n is prime, False otherwise.
+
+    Examples:
+        >>> is_prime(7)
+        True
+        >>> is_prime(4)
+        False
+    """
+    if not isinstance(n, int):
+        raise TypeError("Input must be an integer.")
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    for i in range(3, int(n ** 0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True'''
+
+    reviewer_out = '''## Code Review
+
+**Function:** `is_prime(n)`
+
+**Correctness:** The algorithm correctly handles all edge cases:
+- Numbers less than 2 are correctly returned as non-prime.
+- Even numbers (except 2) are efficiently filtered.
+- The loop iterates only up to the square root, which is optimal.
+
+**Readability:** Variable names are clear. The docstring is complete with Args, Returns, and Examples sections.
+
+**Edge Cases Covered:** Negatives, zero, one, two, even numbers, and large primes.
+
+**Best Practices:** Type hint is present. Input validation raises a `TypeError` for non-integers.
+
+No issues found. The implementation is clean, efficient, and production-ready.
+
+VERDICT: APPROVED'''
+
+    security_out = '''## Security Review
+
+**Function:** `is_prime(n)`
+
+**Checks Performed:**
+- No use of `eval()` or `exec()` — CLEAR
+- No shell injection risks — CLEAR
+- No hardcoded secrets or credentials — CLEAR
+- No unsafe file operations — CLEAR
+- Input validation present: raises `TypeError` for non-integer input — CLEAR
+
+The function performs pure mathematical computation with no external I/O, no dynamic code execution, and no network calls. It is safe for production use.
+
+VERDICT: SECURE'''
+
+    tester_out = '''## Unit Tests for `is_prime`
+
+```python
+import pytest
+from solution import is_prime
+
+def test_prime_number():
+    assert is_prime(7) == True
+
+def test_not_prime():
+    assert is_prime(4) == False
+
+def test_edge_zero():
+    assert is_prime(0) == False
+
+def test_edge_one():
+    assert is_prime(1) == False
+
+def test_edge_two():
+    assert is_prime(2) == True
+
+def test_negative():
+    assert is_prime(-5) == False
+
+def test_large_prime():
+    assert is_prime(97) == True
+
+def test_invalid_input():
+    with pytest.raises(TypeError):
+        is_prime("hello")
+```
+
+**Simulated Results:**
+- test_prime_number       PASSED
+- test_not_prime          PASSED
+- test_edge_zero          PASSED
+- test_edge_one           PASSED
+- test_edge_two           PASSED
+- test_negative           PASSED
+- test_large_prime        PASSED
+- test_invalid_input      PASSED
+
+8/8 tests passed.
+
+VERDICT: PASSED'''
+
+    return {
+        "status": "SUCCESS",
+        "total_iterations": 1,
+        "final_code": coder_out,
+        "iterations": [{
+            "iteration": 1,
+            "coder": coder_out,
+            "reviewer": reviewer_out,
+            "security": security_out,
+            "tester": tester_out,
+        }]
+    }
 
 # ── EXECUTION ──────────────────────────────────────────────────────
 if run_button:
@@ -707,8 +836,26 @@ if run_button:
         progress.progress(10)
         timeline.append((time.strftime("%H:%M:%S"),"Pipeline started"))
 
-        summary = run_crew(user_requirement)
-        elapsed = round(time.time()-start_time, 1)
+        if demo_mode:
+            # ── DEMO: simulate pipeline with pre-written outputs ──
+            import time as _t
+            summary = get_demo_summary()
+            for step_idx, step_label in enumerate([
+                "Coder Agent generating function…",
+                "Reviewer Agent analyzing code quality…",
+                "Security Agent scanning for vulnerabilities…",
+                "Tester Agent evaluating unit tests…",
+            ]):
+                render_card(step_idx, "running")
+                set_status(step_label)
+                progress.progress(10 + step_idx * 22)
+                _t.sleep(0.8)
+                render_card(step_idx, "done")
+                timeline.append((time.strftime("%H:%M:%S"), f"{['Coder','Reviewer','Security','Tester'][step_idx]} completed"))
+            elapsed = round(time.time() - start_time, 1)
+        else:
+            summary = run_crew(user_requirement)
+            elapsed = round(time.time()-start_time, 1)
 
         timeline.append((time.strftime("%H:%M:%S"),"Coder completed"))
         render_card(0,"done"); render_card(1,"running")

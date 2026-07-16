@@ -31,7 +31,7 @@ def run_crew(user_requirement):
         )
 
         # Wait between tasks to avoid hitting Groq TPM rate limits
-        time.sleep(20)
+        time.sleep(5)
 
         # Note: stopping condition relies on agents using exact keywords
         crew.kickoff()
@@ -51,17 +51,34 @@ def run_crew(user_requirement):
             "tester": tester_output
         })
 
-        tests_passed = "VERDICT: PASSED" in tester_output.upper()
+        # Extract only the last non-empty line where the VERDICT keyword lives.
+        # Checking the full output causes false negatives because the prompt text
+        # (e.g. "VERDICT: NEEDS IMPROVEMENT") is echoed back inside the body.
+        def _last_line(text):
+            lines = [l.strip() for l in text.strip().splitlines() if l.strip()]
+            return lines[-1].upper() if lines else ""
 
-        reviewer_approved = (
-            "APPROVED" in reviewer_output.upper() and
-            "NEEDS IMPROVEMENT" not in reviewer_output.upper()
-        )
+        reviewer_last = _last_line(reviewer_output)
+        security_last = _last_line(security_output)
+        tester_last   = _last_line(tester_output)
 
-        security_approved = (
-            "SECURE" in security_output.upper() and
-            "VULNERABILITIES FOUND" not in security_output.upper()
-        )
+        reviewer_approved = "VERDICT: APPROVED" in reviewer_last
+        security_approved = "VERDICT: SECURE"   in security_last
+        tests_passed      = "VERDICT: PASSED"   in tester_last
+
+        # Fallback: agent didn't follow format — scan full output safely
+        if not reviewer_approved:
+            reviewer_approved = (
+                "VERDICT: APPROVED" in reviewer_output.upper() and
+                "VERDICT: NEEDS IMPROVEMENT" not in reviewer_output.upper()
+            )
+        if not security_approved:
+            security_approved = (
+                "VERDICT: SECURE" in security_output.upper() and
+                "VERDICT: VULNERABILITIES FOUND" not in security_output.upper()
+            )
+        if not tests_passed:
+            tests_passed = "VERDICT: PASSED" in tester_output.upper()
 
         if reviewer_approved and security_approved and tests_passed:
             overall_status = "SUCCESS"
