@@ -31,7 +31,7 @@ def run_crew(user_requirement):
         )
 
         # Wait between tasks to avoid hitting Groq TPM rate limits
-        time.sleep(30)
+        time.sleep(20)
 
         # Note: stopping condition relies on agents using exact keywords
         crew.kickoff()
