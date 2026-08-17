@@ -3,7 +3,7 @@ from crewai import Crew, Process
 from agents import coder_agent, reviewer_agent, security_agent, tester_agent
 from tasks import create_tasks
 
-MAX_ITERATIONS = 3
+MAX_ITERATIONS = 1
 
 def run_crew(user_requirement):
     

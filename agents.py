@@ -29,7 +29,7 @@ reviewer_agent = Agent(
         "You catch logic errors, missing edge cases, poor naming, and style issues. "
         "You never rewrite code yourself — you only provide structured feedback."
     ),
-    llm=large_llm,
+    llm=small_llm,
     cache=True,
     verbose=True,
     allow_delegation=False
@@ -45,7 +45,7 @@ security_agent = Agent(
         "You explain why each issue is dangerous and report a concise, concrete fix — "
         "you don't suggest general improvements beyond confirmed vulnerabilities."
     ),
-    llm=large_llm,
+    llm=small_llm,
     cache=True,
     verbose=True,
     allow_delegation=False
